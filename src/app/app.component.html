@@ -1,0 +1,71 @@
+<div>
+	<h2>
+		<a href="https://github.com/DethAriel/ng-recaptcha"><code>ng-recaptcha</code></a> demo
+		(<code>@angular: {{version}}</code>)
+	</h2>
+
+	<p>Select recaptcha mode:</p>
+	<section>
+		<label>
+			<input type="radio" name="recaptchaMode" value="v3" [(ngModel)]="recaptchaMode" />
+			reCAPTCHA v3
+		</label>
+		<label>
+			<input type="radio" name="recaptchaMode" value="normal" [(ngModel)]="recaptchaMode" />
+			Normal
+		</label>
+		<label>
+			<input type="radio" name="recaptchaMode" value="invisible" [(ngModel)]="recaptchaMode" />
+			Invisible
+		</label>
+		<label>
+			<input type="radio" name="recaptchaMode" value="declarativeForms" [(ngModel)]="recaptchaMode"  />
+			Declarative Forms
+		</label>
+		<label>
+			<input type="radio" name="recaptchaMode" value="reactiveForms" [(ngModel)]="recaptchaMode" />
+			Reactive Forms
+		</label>
+	</section>
+
+	<ng-container *ngIf="recaptchaMode === 'normal'">
+		<h3>Normal mode</h3>
+		<re-captcha (resolved)="addTokenLog('Normal mode resolved', $event)"></re-captcha>
+	</ng-container>
+
+	<ng-container *ngIf="recaptchaMode === 'invisible'">
+		<h3>Invisible CAPTCHA</h3>
+		<re-captcha size="invisible" #invisible (resolved)="addTokenLog('Invisible reCAPTCHA response', $event)">
+		</re-captcha>
+		<button (click)="invisible.execute()">Execute</button>
+		<button (click)="invisible.reset()">Reset</button>
+	</ng-container>
+
+	<ng-container *ngIf="recaptchaMode === 'declarativeForms'">
+		<h3>Declarative Forms</h3>
+		<form #declarativeForm="ngForm">
+			<re-captcha [(ngModel)]="declarativeFormCaptchaValue" name="captcha" required
+				(resolved)="addTokenLog('Declarative form mode resolved', $event)"></re-captcha>
+			<button [disabled]="!declarativeForm.valid">Submit</button>
+		</form>
+	</ng-container>
+
+	<ng-container *ngIf="recaptchaMode === 'reactiveForms'">
+		<h3>Reactive Forms</h3>
+		<form [formGroup]="reactiveForm">
+			<re-captcha formControlName="recaptchaReactive" (resolved)="addTokenLog('Reactive form mode resolved', $event)">
+			</re-captcha>
+			<button [disabled]="reactiveForm.invalid">Submit</button>
+		</form>
+	</ng-container>
+
+	<ng-container *ngIf="recaptchaMode === 'v3'">
+		<h3>reCAPTCHA v3</h3>
+		<form>
+			<button (click)="executeRecaptchaV3()">Submit</button>
+		</form>
+	</ng-container>
+
+	<h3>Operation log</h3>
+	<pre>{{ printLog() || "[empty]" }}</pre>
+</div>
